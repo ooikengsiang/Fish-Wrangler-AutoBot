@@ -57,7 +57,7 @@ var timerRefreshInterval = 1;
 // WARNING - Do not modify the code below unless you know how to read and write the script.
 
 // All global variable declaration and default value
-var scriptVersion = "1.07";
+var scriptVersion = "1.08";
 var nextCastTime = 900;
 var castTimeDelay = 0;
 var chumQuantity = 0;
