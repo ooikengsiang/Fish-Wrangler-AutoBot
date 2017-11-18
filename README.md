@@ -12,7 +12,8 @@ Fish Wrangler AutoBot is a simple user script to automate the process of catchin
 * Official Website – http://fish-wrangler.com/
  
 ## Browser Support
-* Mozilla Firefox with Greasemonkey add-on
+* Mozilla Firefox with Greasemonkey / Tempermonkey add-on
+* Microsoft Edge with Tempermonkey add-on
 * Opera
 * Google Chrome
  
