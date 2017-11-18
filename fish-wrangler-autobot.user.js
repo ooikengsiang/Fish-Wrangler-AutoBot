@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Fish Wrangler AutoBot
 // @author      Ooi Keng Siang
-// @version    	1.08
+// @version    	1.09
 // @namespace   http://ooiks.com/blog/fish-wrangler-autobot
 // @description A simple user script to automate the process of catching fish in Fish Wrangler game and many other features.
 // @include		http://apps.facebook.com/fishwrangler/*
@@ -234,7 +234,7 @@ function closePopup()
 				if (linkElementList[i].getAttribute('title') == "Close this popup window?")
 				{
 					// close popup!
-					fireEvent(linkElementList[i], 'click');
+					linkElementList[i].click();
 					
 					break;
 				}
@@ -257,7 +257,7 @@ function closePopup()
 		displayAction("Skipping invite friend...", "Skipping invite friend...", "-", null);
 		
 		// click the skip button
-		fireEvent(inviteSkipDivElement.firstChild, 'click');
+		inviteSkipDivElement.firstChild.click();
 		
 		inviteSkipDivElement = null;
 		
@@ -275,7 +275,7 @@ function closePopup()
 				// Free Raffle
 			
 				// click the button
-				fireEvent(inputElementList[i], 'click');
+				inputElementList[i].click();
 				inputElementList = null;
 				return;
 			}
@@ -284,7 +284,7 @@ function closePopup()
 				// login daily bonus
 			
 				// click the button
-				fireEvent(inputElementList[i], 'click');
+				inputElementList[i].click();
 				inputElementList = null;
 				return;
 			}
@@ -1016,7 +1016,7 @@ function afterCastRod()
 	retrieveData();
 			
 	// script continue as normal
-	window.setTimeout(function () { countdownTimer() }, timerRefreshInterval * 1000);
+	window.setTimeout(function () { action() }, timerRefreshInterval * 1000);
 }
 	
 
@@ -1123,94 +1123,49 @@ function timeFormatLong(time)
 	return (timeString);
 }
 
-function fireEvent(element, event)
-{
-	if (document.createEventObject)
-	{
-		// dispatch for IE
-		var evt = document.createEventObject();
-		return element.fireEvent('on' + event, evt)
-	}
-	else
-	{
-		// dispatch for firefox + others
-		var evt = document.createEvent("HTMLEvents");
-		evt.initEvent(event, true, true ); // event type,bubbling,cancelable
-		return !element.dispatchEvent(evt);
-	}
-}
-
 function clickLink(linkElement)
 {
 	if (linkElement)
 	{
-		/*
-		if (document.createEventObject)
+		// perform click
+		linkElement.click();
+
+		// automaticall use url cast rod after 3 seconds just in case the rod was not casted properly
+		var urlAddress = linkElement.getAttribute('href').toString();
+		var target = linkElement.getAttribute('target').toString();
+		if (urlAddress.indexOf("http") == -1)
 		{
-			// dispatch for IE
-			var evt = document.createEventObject();
-			linkElement.fireEvent('onclick', evt)
+			if (fbPlatform)
+			{
+				if (window.location.href.indexOf("https://") != -1)
+				{
+					urlAddress = "https://fish-wrangler.com" + urlAddress;
+				}
+				else
+				{
+					urlAddress = "https://fish-wrangler.com" + urlAddress;
+				}
+			}
+			else if (fwPlatform)
+			{
+				if (window.location.href.indexOf("https://") != -1)
+				{
+					urlAddress = "https://fish-wrangler.com" + urlAddress;
+				}
+				else
+				{
+					urlAddress = "http://fish-wrangler.com" + urlAddress;
+				}
+			}
+		}
+		
+		if (target.toString() == "_parent")
+		{
+			window.setTimeout(function () { parent.change_parent_url(urlAddress); }, 3000);
 		}
 		else
 		{
-			// dispatch for firefox + others
-			var evt = document.createEvent("HTMLEvents");
-			evt.initEvent("click", true, true );
-			linkElement.dispatchEvent(evt);
-		}
-		*/
-		
-		var cancelled = false;
-		if (document.createEvent) 
-		{
-			var event = document.createEvent("MouseEvents");
-			event.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-			cancelled = !linkElement.dispatchEvent(event);
-		}
-		else if (linkElement.fireEvent) 
-		{
-			cancelled = !linkElement.fireEvent("onclick");
-		}
-
-		if (!cancelled) 
-		{
-			// automaticall use url cast rod after 3 seconds just in case the rod was not casted properly
-			var urlAddress = linkElement.getAttribute('href').toString();
-			var target = linkElement.getAttribute('target').toString();
-			if (urlAddress.indexOf("http") == -1)
-			{
-				if (fbPlatform)
-				{
-					if (window.location.href.indexOf("https://") != -1)
-					{
-						urlAddress = "https://fish-wrangler.com" + urlAddress;
-					}
-					else
-					{
-						urlAddress = "https://fish-wrangler.com" + urlAddress;
-					}
-				}
-				else if (fwPlatform)
-				{
-					if (window.location.href.indexOf("https://") != -1)
-					{
-						urlAddress = "https://fish-wrangler.com" + urlAddress;
-					}
-					else
-					{
-						urlAddress = "http://fish-wrangler.com" + urlAddress;
-					}
-				}
-			}
-			
-			if (target.toString() == "_parent")
-			{
-				window.setTimeout(function () { parent.change_parent_url(urlAddress); }, 3000);
-			}
-			else
-			{
-				window.setTimeout(function () { window.location.href = urlAddress; }, 3000);
-			}
+			window.setTimeout(function () { window.location.href = urlAddress; }, 3000);
 		}
 	}
 }
